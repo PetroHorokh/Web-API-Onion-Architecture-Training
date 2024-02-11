@@ -2,6 +2,7 @@ using Core;
 using Core.Services.Abstract;
 using Data;
 using Infrastructure.Controllers;
+using Infrastructure.Middleware;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
@@ -37,6 +38,7 @@ try
 
     var app = builder.Build();
 
+    app.UseMiddleware(typeof(ExceptionHandlingMiddleware));
     app.UseSerilogRequestLogging();
 
     if (app.Environment.IsDevelopment())
