@@ -12,7 +12,13 @@ public interface IOwnerService
 
     Task<IEnumerable<Owner>> GetOwnersByDateOfBirthAsync(DateTime dateOfBirth, CancellationToken cancellationToken = default);
 
-    Task<Owner?> GetOwnerOfAccountAsync(Guid accountId, CancellationToken cancellationToken = default);
+    Task<Owner?> GetOwnerByAccountIdAsync(Guid accountId, CancellationToken cancellationToken = default);
 
     Task<Owner?> GetOwnerByIdAsync(Guid ownerId, CancellationToken cancellationToken = default);
+
+    Task CreateOwnerAsync(Owner owner, CancellationToken cancellationToken = default);
+
+    Task<Owner?> DeleteOwnerAsync(Guid ownerId, CancellationToken cancellationToken = default);
+
+    Task<Owner?> UpdateOwnerAsync(Guid ownerId, Owner ownerUpdate, CancellationToken cancellationToken = default);
 }

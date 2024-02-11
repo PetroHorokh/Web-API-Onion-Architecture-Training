@@ -43,7 +43,7 @@ public class OwnerService(IUnitOfWork unitOfWork) : IOwnerService
                 owner => owner.DateOfBirth == dateOfBirth, 
                 cancellationToken);
 
-    public async Task<Owner?> GetOwnerOfAccountAsync(
+    public async Task<Owner?> GetOwnerByAccountIdAsync(
         Guid accountId, 
         CancellationToken cancellationToken = default)
     {
@@ -75,4 +75,63 @@ public class OwnerService(IUnitOfWork unitOfWork) : IOwnerService
                 owner => owner.Id == ownerId, 
                 cancellationToken))
         .FirstOrDefault();
+
+    public async Task CreateOwnerAsync(
+        Owner owner, 
+        CancellationToken cancellationToken = default)
+    {
+        _unitOfWork
+            .Owners
+            .Create(owner);
+
+        await _unitOfWork
+            .SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<Owner?> DeleteOwnerAsync(
+        Guid ownerId, 
+        CancellationToken cancellationToken = default)
+    {
+        var owner = (await _unitOfWork
+            .Owners
+            .GetByConditionAsync(
+                owner => owner.Id == ownerId, 
+                cancellationToken))
+            .FirstOrDefault();
+
+        if (owner != null)
+        {
+            _unitOfWork
+                .Owners
+                .Delete(owner);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+        }
+
+        return owner;
+    }
+
+    public async Task<Owner?> UpdateOwnerAsync(
+        Guid ownerId, 
+        Owner ownerUpdate, 
+        CancellationToken cancellationToken = default)
+    {
+        var owner = (await _unitOfWork
+            .Owners
+            .GetByConditionAsync(
+                owner => owner.Id == ownerId, 
+                cancellationToken))
+            .FirstOrDefault();
+
+        if (owner != null)
+        {
+            owner.Name = ownerUpdate.Name;
+            owner.Address = ownerUpdate.Address;
+            owner.DateOfBirth = ownerUpdate.DateOfBirth;
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+        }
+
+        return owner;
+    }
 }
